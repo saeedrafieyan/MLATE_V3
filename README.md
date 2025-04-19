@@ -1,17 +1,3 @@
----
-title: MLATE
-emoji: 🌍
-colorFrom: red
-colorTo: indigo
-sdk: streamlit
-sdk_version: 1.44.1
-app_file: app.py
-pinned: false
-license: cc-by-nc-4.0
-short_description: ML Applications in Tissue Engineering
----
-
-
 # 👬 MLATE V3: Multi-Tissue Scaffold Prediction Platform
 
 **MLATE V3** is a fully integrated, machine learning-powered platform for predicting, optimizing, and generating detailed fabrication procedures for 3D-(bio)printed scaffolds in tissue engineering. This app enables researchers to input a wide range of biomaterials, cell lines, and printing parameters, and receive optimized scaffold compositions along with step-by-step printing instructions generated via Google Gemini.
