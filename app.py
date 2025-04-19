@@ -422,9 +422,9 @@ if 'pp_ranges' not in st.session_state:
 # ─── App Layout ──────────────────────────────────────────────────────────────────
 st.title("🧬 MLATE: Machine Learning Applications in Tissue Engieering")
 st.markdown(
-    "<p style='font-size:0.8em; color:grey;'>"
-    "An integrated platform for predicting the quality of 3D (bio)printed scaffolds "
-    "in tissue engineering. For more details, please refer to and cite our paper: "
+    "<p style='font-size:1.2em; color:grey;'>"
+    "A fully integrated Multi-Tissue, machine learning platform for prediction, optimization and generating procedures for fabricating 3D-(bio)printing scaffolds for tissue engineering. "
+    "For more details, please refer to and cite our paper: "
     "<a href='https://doi.org/xxx' target='_blank'>https://doi.org/xxx</a>"
     "</p>",
     unsafe_allow_html=True
@@ -589,7 +589,7 @@ if st.button("🛠️ Optimize WSSQ"):
     st.table(best_df)
 
     # ─── Fabrication Procedure via GPT ───────────────────────────────────────────────
-    st.markdown("## 🏭 Fabrication Procedure")
+    st.markdown("## 🧪 Fabrication Procedure")
     with st.spinner("Generating fabrication procedure…"):
         density = best.params.get("cell_density", 0.0)
         prompt = (
