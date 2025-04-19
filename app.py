@@ -415,7 +415,7 @@ if 'density_range' not in st.session_state:
 
 if 'pp_ranges' not in st.session_state:
     st.session_state.pp_ranges = {
-        name: {'min': 0.0, 'max': 10.0, 'step': 3.0}
+        name: {'min': 0.0, 'max': 10.0, 'step': 1.0}
         for name in PRINT_PARAM_NAMES
     }
 
@@ -480,7 +480,7 @@ for i, row in enumerate(st.session_state.bio_rows):
 st.markdown("---")
 
 # ─── Cell Line & Density Section ────────────────────────────────────────────────
-st.subheader("Cell Line & Density")
+st.subheader("Cell Line & Density (10^6 cells/ml)")
 col1, col2, col3, col4 = st.columns([2,1,1,1])
 cell_line = col1.selectbox("Cell Line", CELL_LINE_OPTIONS)
 
