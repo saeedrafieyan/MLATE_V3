@@ -1,4 +1,4 @@
-# 👬 MLATE V3: Multi-Tissue Scaffold Prediction Platform
+# MLATE V3: Multi-Tissue Scaffold Prediction Platform
 
 **MLATE V3** is a fully integrated, machine learning-powered platform for predicting, optimizing, and generating detailed fabrication procedures for 3D-(bio)printed scaffolds in tissue engineering. This app enables researchers to input a wide range of biomaterials, cell lines, and printing parameters, and receive optimized scaffold compositions along with step-by-step printing instructions generated via Google Gemini.
 
@@ -12,7 +12,6 @@
 - 🧪 Optimize biomaterial concentrations, cell densities, and printing parameters using Optuna
 - 🧠 Powered by two fine-tuned **CatBoostClassifier** models
 - 📋 Automatically generates fabrication protocols with Gemini API
-- 🔐 Enforces safe defaults and intelligent UI input validation
 - 🧱 Uses a real-world, curated dataset of **2847 samples** across **multiple tissues and cell lines**
 
 ---
@@ -23,11 +22,9 @@ This project includes a publicly available dataset (`Dataset.xlsx`) containing:
 - 123 biomaterials
 - 175 cell lines
 - 7 printing parameters
-- Scaffold performance labels
+- Scaffold quality labels
 
-The dataset is available in the [Files and Versions](https://huggingface.co/spaces/your-username/your-space-name/blob/main/Dataset.xlsx) tab of this Space.
-
-You may also optionally add this to Hugging Face Datasets for broader access.
+The dataset is available in the [Files and Versions](https://github.com/saeedrafieyan/MLATE_V3/blob/main/Dataset.xlsx) tab of this Repo.
 
 ---
 
