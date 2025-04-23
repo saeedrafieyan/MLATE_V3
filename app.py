@@ -13,7 +13,6 @@ from google.genai import types
 
 
 
-# keep a reference to the real number_input
 _original_number_input = st.number_input
 
 def safe_number_input(label, **kwargs):
@@ -24,7 +23,6 @@ def safe_number_input(label, **kwargs):
     min_value = kwargs.get("min_value", float("-inf"))
     max_value = kwargs.get("max_value", float("inf"))
     value     = kwargs.get("value", min_value)
-    # clamp
     clamped = min(max(value, min_value), max_value)
     if clamped != value:
         st.warning(
@@ -34,21 +32,18 @@ def safe_number_input(label, **kwargs):
     kwargs["value"] = clamped
     return _original_number_input(label, **kwargs)
 
-# override streamlit's number_input globally
 st.number_input = safe_number_input
 
 
 
-# directly use your Gemini key
 gemini_key = os.getenv("GEMINI_API_KEY")
 if not gemini_key:
-    st.error("🚨 Gemini API key not found. Please set GEMINI_API_KEY in your Space settings.")
+    st.error("Gemini API key not found. Please set GEMINI_API_KEY in your Space settings.")
     st.stop()
 
 client = genai.Client(api_key=gemini_key)
 
 
-# ─── Scaffold Quality Function ───────────────────────────────────────────────────
 def scaffold_quality_combined(printability, cell_response,
                               weight_printability=0.3, weight_cell_response=0.7):
     if printability == 0:
@@ -64,7 +59,6 @@ def scaffold_quality_combined(printability, cell_response,
     mc = (norm_p**weight_printability) * (norm_c**weight_cell_response)
     return 100 * ((hm + mc) / 2.0)
 
-# ─── Constants ────────────────────────────────────────────────────────────────────
 BIOMATERIAL_OPTIONS = [
     "Alginate (%w/v)",
     "PVA-HA (%w/v)",
@@ -378,7 +372,6 @@ PRINT_PARAM_NAMES = [
     "Substrate Temperature (°C)",
 ]
 
-# ─── Load Encoder, Scalers, Models ────────────────────────────────────────────────
 @st.cache_resource
 def load_encoder():
     return joblib.load('cell_line_encoder.joblib')
@@ -403,7 +396,6 @@ model_print,   model_cell = load_models()
 feature_order_print = list(scaler_print.feature_names_in_)
 feature_order_cell  = list(scaler_cell.feature_names_in_)
 
-# ─── Session State Initialization ────────────────────────────────────────────────
 if 'bio_rows' not in st.session_state:
     st.session_state.bio_rows = [{
         'mat': BIOMATERIAL_OPTIONS[0],
@@ -419,7 +411,6 @@ if 'pp_ranges' not in st.session_state:
         for name in PRINT_PARAM_NAMES
     }
 
-# ─── App Layout ──────────────────────────────────────────────────────────────────
 st.title("🧬 MLATE: Machine Learning Applications in Tissue Engieering")
 st.markdown(
     "<p style='font-size:1.2em; color:grey;'>"
@@ -430,7 +421,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ─── Biomaterials Section ────────────────────────────────────────────────────────
 st.subheader("Biomaterials (enter range for each)")
 if st.button("➕ Add Biomaterial"):
     used = {r['mat'] for r in st.session_state.bio_rows}
@@ -459,7 +449,6 @@ for i, row in enumerate(st.session_state.bio_rows):
         "Min", min_value=0.0, max_value=row['max'],
         value=row['min'], step=row['step'], key=f"bio_min_{i}"
     )
-    # ← min_value for Max is now the step; default value at least step
     mx = c3.number_input(
         "Max", min_value=row['step'], max_value=100.0,
         value=max(row['max'], row['step']), step=row['step'],
@@ -479,7 +468,6 @@ for i, row in enumerate(st.session_state.bio_rows):
 
 st.markdown("---")
 
-# ─── Cell Line & Density Section ────────────────────────────────────────────────
 st.subheader("Cell Line & Density (10^6 cells/ml)")
 col1, col2, col3, col4 = st.columns([2,1,1,1])
 cell_line = col1.selectbox("Cell Line", CELL_LINE_OPTIONS)
@@ -489,7 +477,6 @@ dmin = col2.number_input(
     "Min Density", min_value=0.0, max_value=dr['max'],
     value=dr['min'], step=dr['step'], key="cd_min"
 )
-# ← ensure Max Density cannot go below the step
 dmax = col3.number_input(
     "Max Density", min_value=dr['step'], max_value=1000.0,
     value=max(dr['max'], dr['step']), step=dr['step'], key="cd_max"
@@ -504,7 +491,6 @@ dr['step'] = col4.number_input(
 
 st.markdown("---")
 
-# ─── Printing Parameters Section ────────────────────────────────────────────────
 st.subheader("Printing Parameters (enter range)")
 for name in PRINT_PARAM_NAMES:
     pmin  = st.session_state.pp_ranges[name]['min']
@@ -517,7 +503,6 @@ for name in PRINT_PARAM_NAMES:
         "Min", min_value=0.0, max_value=pmax,
         value=pmin, step=pstep, key=f"pp_min_{name}"
     )
-    # ← enforce Max ≥ step
     pmax = c3.number_input(
         "Max", min_value=pstep, max_value=10000.0,
         value=max(pmax, pstep), step=pstep, key=f"pp_max_{name}"
@@ -532,7 +517,6 @@ for name in PRINT_PARAM_NAMES:
 
 st.markdown("---")
 
-# ─── Optuna Optimize & Display ──────────────────────────────────────────────────
 if st.button("🛠️ Optimize WSSQ"):
     with st.spinner("Running Optuna…"):
         def objective(trial):
@@ -588,7 +572,6 @@ if st.button("🛠️ Optimize WSSQ"):
                 .to_frame()
     st.table(best_df)
 
-    # ─── Fabrication Procedure via GPT ───────────────────────────────────────────────
     st.markdown("## 🧪 Fabrication Procedure")
     with st.spinner("Generating fabrication procedure…"):
         density = best.params.get("cell_density", 0.0)
